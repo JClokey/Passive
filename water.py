@@ -73,7 +73,6 @@ This allows us to back calculate a time weighted average concentration of an ana
 """
 
 """
-TO BE REMOVED
 General notes
 Cs = Cw*Ksw(1-e^[-Ke*t])
 where Cs is the concentration (μg g−1) of the analyte in the sorbent, 
