@@ -24,13 +24,23 @@ def plateau(ksw, mass):
     # CHECK THIS!!!
     return ksw * mass
 
-def two_phase_nonlin_fit(): 
+def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', water_unit = 'mL', plot = False): 
     # estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL intereference
     # this uses the nonlin function and a curve fitting method from scipy.optimize
-    params, covs = curve_fit(nonlin, x, y)
+    params, covs = curve_fit(nonlin, time_column, compound_column)
     ksw, sampling_rate = params[0], params[1]
     print(ksw, sampling_rate)
     
+    if plot == True:
+        plot_range = np.arange(min(time), max(time))
+        fig, ax = plt.subplots()
+        ax.plot(time_column, compound_column, 'ko', label="y-original")
+        ax.plot(plot_range, nonlin(plot_range, *params), label="a*M*(1-exp(-(r*x)/(a*M)))", color = 'black')
+        plt.xlabel('Day')
+        plt.ylabel('ng per sampler / ng per mL water')
+        plt.legend(loc='best', fancybox=True, shadow=True)
+        plt.grid(True)
+        plt.show()
 
 # These functions deal with the kinetic period of the uptake curve, here a linear regression is an appropriate approximation of the rs
 def two_phase_kinetic(df, time, compound, time_unit = 'day', water_unit = 'mL', plot = False): 
@@ -97,3 +107,24 @@ def TWA(sampling_rate, time, mass, conc_sorbent):
 
 def Ksw():
     pass
+
+"""
+Semi-permeable membrane devices (SPMD)
+SPMDs are polyethylene membranes containing triolein (lipid), they are most useful for organic compounds with a LogP > 3, this section concerns their surface water uses
+Examples of compounds SPMDs are typically used for are: Polycyclic Aromatic Hydrocarbons (PAHs), Polychlorinated Biphenyls (PCBs), Polybrominated Diphenyl Ethers (PBDEs), Organochlorine Pesticides, Fragrances, Dioxins and Furans
+"""
+
+# 7.1
+def SPMD_flux(ki,Ci):
+    return ki * Ci
+
+# 7.4
+def SPMD_mass_transfer_coef(WBL_mtc, biofilm_mtc, LDPE_mtc, biofilm_water_partition, membrane_water_partition):
+    return (1/WBL_mtc) + (1/(biofilm_mtc*biofilm_water_partition) + (1/(LDPE_mtc*membrane_water_partition)))
+    
+# 7.8
+def SPMD_sampling_rate(mass_transfer_resistance, surface_area):
+    return mass_transfer_resistance * surface_area
+
+def SPMD_equilibrium(sampler_conc, Ksw):
+    return sampler_conc / Ksw
