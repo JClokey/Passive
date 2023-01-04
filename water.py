@@ -12,26 +12,29 @@ import scipy as sp
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 import seaborn as sns
+import math
 
 
 # These functions deal with the curvilinear period of the uptake curve, this requires curve fitting a model to estimate sorbent water coefficient (ksw) and sampling rate (rs)
-def nonlin(rs, time, ksw, mass): 
+def nonlin(rs, time, ksw, sorbent_mass): 
     # create the full equation for the non/curvilinear phase for a passive sampler with limited WBL intereference
-    return ksw * mass * (1 - exp(-(rs * time)/(ksw * mass)))
+    return ksw * sorbent_mass * (1 - exp(-(rs * time)/(ksw * sorbent_mass)))
 
 
-def plateau(ksw, mass):
+def plateau(ksw, sorbent_mass):
     # CHECK THIS!!!
-    return ksw * mass
+    return ksw * sorbent_mass
 
+
+# estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL intereference
+# this uses the nonlin function and a curve fitting method from scipy.optimize
 def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', water_unit = 'mL', plot = False): 
-    # estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL intereference
-    # this uses the nonlin function and a curve fitting method from scipy.optimize
-    params, covs = curve_fit(nonlin, time_column, compound_column)
+    
+    params, covs = curve_fit(nonlin, df.loc[:, time_column], df.loc[:, compound_column])
     ksw, sampling_rate = params[0], params[1]
-    print(ksw, sampling_rate)
     
     if plot == True:
+        print(ksw, str(sampling_rate + water_unit + "/" + time_unit))
         plot_range = np.arange(min(time), max(time))
         fig, ax = plt.subplots()
         ax.plot(time_column, compound_column, 'ko', label="y-original")
@@ -41,6 +44,14 @@ def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', wa
         plt.legend(loc='best', fancybox=True, shadow=True)
         plt.grid(True)
         plt.show()
+    return ksw, sampling_rate
+
+
+# Calculate the t1/2 i.e., you can deploy the sampler for this compound for 2 times this value to reach equilibrium
+# unit agnostic
+def half_time_equi(ksw, sampling_rate, sorbent_mass):
+    return (math.log(2)*sorbent_mass*ksw)/sampling_rate
+
 
 # These functions deal with the kinetic period of the uptake curve, here a linear regression is an appropriate approximation of the rs
 def two_phase_kinetic(df, time, compound, time_unit = 'day', water_unit = 'mL', plot = False): 
@@ -59,7 +70,7 @@ def two_phase_kinetic(df, time, compound, time_unit = 'day', water_unit = 'mL', 
         plt.show()
     
 
-def kinetic_plot(time, compound, time_unit = 'day', water_unit = 'mL'):
+def kinetic_plot(time, compound, time_unit = 'day', water_unit = 'mL', plot = False):
     if len(compound) == 0 or len(time) == 0:
         raise ValueError("Inputs must not be empty.")
     if len(compound) != len(time):
@@ -67,6 +78,7 @@ def kinetic_plot(time, compound, time_unit = 'day', water_unit = 'mL'):
     #rs = ns/(cw*t)
     results = sp.stats.linregress(time, compound)
     print(f"Sampling rate is {results[0]:.3f} ± {results[4]:.3f}{water_unit}/{time_unit}\np-value is {results[3]}\nR\u00B2 is {results[2]:.3f}")
+    if plot == True:
 
 
 
@@ -100,10 +112,9 @@ Thus we can solve for Cw which is the time weighted average by rearranging to:
 Cw = (Cs*Ms)/(Rs*t)
 """
 
-def TWA(sampling_rate, time, mass, conc_sorbent):
-    time_weighted_average = (conc_sorbent * mass)/(sampling_rate * time)
-    return time_weighted_average
-
+def TWA(sampling_rate, time, sorbent_mass, conc_sorbent):
+    return (conc_sorbent * sorbent_mass)/(sampling_rate * time)
+    
 
 def Ksw():
     pass
