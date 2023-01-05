@@ -79,6 +79,7 @@ def kinetic_plot(time, compound, time_unit = 'day', water_unit = 'mL', plot = Fa
     results = sp.stats.linregress(time, compound)
     print(f"Sampling rate is {results[0]:.3f} ± {results[4]:.3f}{water_unit}/{time_unit}\np-value is {results[3]}\nR\u00B2 is {results[2]:.3f}")
     if plot == True:
+        pass
 
 
 
