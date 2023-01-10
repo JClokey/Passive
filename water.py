@@ -22,20 +22,25 @@ def nonlin(rs, time, ksw, sorbent_mass):
 
 
 def plateau(ksw, sorbent_mass):
-    # CHECK THIS!!!
+    TODO
     return ksw * sorbent_mass
 
 
 # estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL intereference
 # this uses the nonlin function and a curve fitting method from scipy.optimize
 def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', water_unit = 'mL', plot = False): 
-    
+    # use the scipy optimise curve fit function to fit the data to the nonlin equation, estimating unknown parameters
     params, covs = curve_fit(nonlin, df.loc[:, time_column], df.loc[:, compound_column])
+    
+    # pulls out the estimated sorbent water partitioning coefficient (ksw) and the estimated sampling rate
     ksw, sampling_rate = params[0], params[1]
     
+    # if plot is called in the args this will create a non-linear uptake graph
     if plot == True:
         print(ksw, str(sampling_rate + water_unit + "/" + time_unit))
+        # plot_range creates a range from the lowest to highest time point, allowing the curve fit to plot smoothly by interpolating unknowns between data points
         plot_range = np.arange(min(time), max(time))
+        # substantiate the graph space
         fig, ax = plt.subplots()
         ax.plot(time_column, compound_column, 'ko', label="y-original")
         ax.plot(plot_range, nonlin(plot_range, *params), label="a*M*(1-exp(-(r*x)/(a*M)))", color = 'black')
@@ -50,7 +55,10 @@ def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', wa
 # Calculate the t1/2 i.e., you can deploy the sampler for this compound for 2 times this value to reach equilibrium
 # unit agnostic
 def half_time_equi(ksw, sampling_rate, sorbent_mass):
-    return (math.log(2)*sorbent_mass*ksw)/sampling_rate
+    TODO
+    # there are two possibilities here, the second is the red book, the first is from Sarit's prepub
+    v1 = (math.log(2)*sorbent_mass*ksw)/sampling_rate
+    v2 = (math.log(2)/(sampling_rate/(ksw*sorbent_mass))) # Vs undefined by Alvarez, great fucking work there. Rory confirmed sorbent mass and there are multiple ways to calculate
 
 
 # These functions deal with the kinetic period of the uptake curve, here a linear regression is an appropriate approximation of the rs
@@ -118,7 +126,7 @@ def TWA(sampling_rate, time, sorbent_mass, conc_sorbent):
     
 
 def Ksw():
-    pass
+    TODO
 
 """
 Semi-permeable membrane devices (SPMD)
@@ -128,6 +136,7 @@ Examples of compounds SPMDs are typically used for are: Polycyclic Aromatic Hydr
 
 # 7.1
 def SPMD_flux(ki,Ci):
+    TODO
     return ki * Ci
 
 # 7.2
@@ -146,7 +155,9 @@ def SPMD_ksw(Vm, Kmw, KLW, VL):
 
 # 7.8
 def SPMD_sampling_rate(mass_transfer_resistance, surface_area):
+    # calculate the sampling rate for an analyte with the SPMD passive sampler
     return mass_transfer_resistance * surface_area
 
 def SPMD_equilibrium(sampler_conc, Ksw):
+    # Calculate the concentration in the water at the time of retrieval assuming SPMD is in equilibrium with surrounding environment for the relevant analyte
     return sampler_conc / Ksw
