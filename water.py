@@ -122,11 +122,13 @@ Cw = (Cs*Ms)/(Rs*t)
 """
 
 def TWA(sampling_rate, time, sorbent_mass, conc_sorbent):
+    # this is the base calculation for determining the time weighted average based on a calibrated passive sampler
     return (conc_sorbent * sorbent_mass)/(sampling_rate * time)
     
 
-def Ksw():
-    TODO
+def Ksw(conc_sorbent, conc_water):
+    # base calculation for determining sorbent/water coefficient
+    return (conc_sorbent/conc_water)
 
 """
 Semi-permeable membrane devices (SPMD)
