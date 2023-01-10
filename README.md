@@ -7,9 +7,9 @@ There was general consensus that one of the obstacles to greater uptake of passi
 
 ### Calculators
 To address this the Passive python library will provide standardised calculations for a variety of passive sampler configurations including:
- - Sampling rate (R~s~) calculation
+ - Sampling rate (R<sub>s</sub>) calculation
  - Time-weighted average calculation
- - Various K~sw~ calculations
+ - Various K<sub>sw</sub> calculations
  - Kinetic - curvilinear - equilibrium fits and comparisons
  - Half-time to equilibrium calculations
  - Publication quality graphs
