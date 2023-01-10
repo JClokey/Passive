@@ -130,10 +130,20 @@ Examples of compounds SPMDs are typically used for are: Polycyclic Aromatic Hydr
 def SPMD_flux(ki,Ci):
     return ki * Ci
 
-# 7.4
-def SPMD_mass_transfer_coef(WBL_mtc, biofilm_mtc, LDPE_mtc, biofilm_water_partition, membrane_water_partition):
-    return (1/WBL_mtc) + (1/(biofilm_mtc*biofilm_water_partition) + (1/(LDPE_mtc*membrane_water_partition)))
-    
+# 7.2
+#def 
+
+def SPMD_ksw(Vm, Kmw, KLW, VL):
+
+    """
+    Determination of Uptake Kinetics (Sampling Rates) by Lipid-Containing Semipermeable Membrane Devices (SPMDs) for Polycyclic Aromatic Hydrocarbons (PAHs) in Water
+    James N. Huckins, Jimmie D. Petty, Carl E. Orazio, Jon A. Lebo, Randal C. Clark, Virginia L. Gibson, William R. Gala, and Kathy R. Echols
+    Environmental Science & Technology 1999 33 (21), 3918-3923
+    DOI: 10.1021/es990440u  """
+
+    # where Vm = volume of the membrane, Kmw = volume-averaged partition coefficient for the membrane, KLW = volume-averaged partition coefficient for the triolein, VL = volume of lipid
+    return (Vm*Kmw)+(VL*KLW)/(Vm+VL)
+
 # 7.8
 def SPMD_sampling_rate(mass_transfer_resistance, surface_area):
     return mass_transfer_resistance * surface_area
