@@ -1,0 +1,9 @@
+- slug: cran
+  ref:
+    - base_r
+    - tidyverse
+  en:
+    term: "Comprehensive R Archive Network"
+    acronym: "CRAN"
+    def: >
+      A public repository of R [packages](#package).
