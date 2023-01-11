@@ -8,9 +8,12 @@ build:
 
   tools:
     python: "3.9"
-      install:
-        - method: pip
-          path: .
+
+
+python:
+  install:
+    - method: pip
+      path: .
 
 
 # make it more obvious when an rtd build fails
