@@ -8,17 +8,15 @@ build:
 
   tools:
     python: "3.9"
-  
-python:
-  # install passive before building the docs to prevent errors
-  install:
-   - method: pip
-     path: .
-      
+      install:
+        - method: pip
+          path: .
+
 
 # make it more obvious when an rtd build fails
 sphinx:
   fail_on_warning: true
+
 
 # documentation already available as HTML, this will allow it to be downloaded as PDF and EPUB formats
 formats:
