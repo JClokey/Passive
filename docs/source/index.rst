@@ -25,9 +25,7 @@ Additionally a module titled **learn** will provide various functions explaining
  - Standard operating procedures for construction, deployment and extraction
  - Quality assurance and quality control
 
-
-.. note::
-
+# Note
    This project is under active development.
 
    
