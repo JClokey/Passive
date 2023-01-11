@@ -1,9 +1,9 @@
 from setuptools import setup
 
-setup(name='my_library',
+setup(name='Passive',
       version='1.0',
-      description='A simple example library',
-      author='Your Name',
-      author_email='your_email@example.com',
-      packages=['my_library'],
+      description='Passive sampling calculators',
+      author='Joseph Clokey',
+      author_email='joeclokey@gmail.com',
+      packages=['water', 'learn'],
       zip_safe=False)
