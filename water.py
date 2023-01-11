@@ -8,6 +8,7 @@ These equations are for passive sampler designs which do not expect to have sign
 # Import necessary libraries/packages/modules
 
 from numpy import exp
+import numpy as np
 import scipy as sp
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
@@ -26,7 +27,7 @@ def plateau(ksw, sorbent_mass):
     return ksw * sorbent_mass
 
 
-# estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL intereference
+# estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL interference
 # this uses the nonlin function and a curve fitting method from scipy.optimize
 def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', water_unit = 'mL', plot = False): 
     # use the scipy optimise curve fit function to fit the data to the nonlin equation, estimating unknown parameters
@@ -39,7 +40,7 @@ def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', wa
     if plot == True:
         print(ksw, str(sampling_rate + water_unit + "/" + time_unit))
         # plot_range creates a range from the lowest to highest time point, allowing the curve fit to plot smoothly by interpolating unknowns between data points
-        plot_range = np.arange(min(time), max(time))
+        plot_range = np.arange(min(time_column), max(time_column))
         # substantiate the graph space
         fig, ax = plt.subplots()
         ax.plot(time_column, compound_column, 'ko', label="y-original")
@@ -56,7 +57,7 @@ def two_phase_nonlin_fit(df, time_column, compound_column, time_unit = 'day', wa
 # unit agnostic
 def half_time_equi(ksw, sampling_rate, sorbent_mass):
     TODO
-    # there are two possibilities here, the second is the red book, the first is from Sarit's prepub
+    # there are two possibilities here, the second is the red book, the first is from Sarit's prepub and Gtips
     v1 = (math.log(2)*sorbent_mass*ksw)/sampling_rate
     v2 = (math.log(2)/(sampling_rate/(ksw*sorbent_mass))) # Vs undefined by Alvarez, great fucking work there. Rory confirmed sorbent mass and there are multiple ways to calculate
 
@@ -131,14 +132,14 @@ def Ksw(conc_sorbent, conc_water):
     return (conc_sorbent/conc_water)
 
 """
-Semi-permeable membrane devices (SPMD)
+Semi-permeable membrane devices (SPMD) section
 SPMDs are polyethylene membranes containing triolein (lipid), they are most useful for organic compounds with a LogP > 3, this section concerns their surface water uses
 Examples of compounds SPMDs are typically used for are: Polycyclic Aromatic Hydrocarbons (PAHs), Polychlorinated Biphenyls (PCBs), Polybrominated Diphenyl Ethers (PBDEs), Organochlorine Pesticides, Fragrances, Dioxins and Furans
 """
 
 # 7.1
 def SPMD_flux(ki,Ci):
-    TODO
+    # where ki is mass-transfer coefficient and Ci is concentration difference between end points of the phase this will give flux 
     return ki * Ci
 
 # 7.2
